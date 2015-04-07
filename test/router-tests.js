@@ -24,15 +24,14 @@ THE SOFTWARE.
 
 */
 
+'use strict';
+
 describe('API Routing tests', function () {
-    'use strict';
-
     var request = require('request'),
-        util = require('util'),
         expect = require('chai').expect,
-        router = require('../lib/router.js'),
+        router = require('../lib/router.js');
 
-        someData = { astring: 'dude', anumber: 42, aboolean: true },
+    var someData = { astring: 'dude', anumber: 42, aboolean: true },
         successObj = { success: true };
 
     function getHandler(endpoint, data, req, res) {
@@ -55,12 +54,14 @@ describe('API Routing tests', function () {
 
     describe('> basic routing', function () {
         var server,
+            /* eslint-disable no-multi-spaces */
             reqs = [
                 { method: 'GET',  ep: '/foo',           result: someData },
                 { method: 'POST', ep: '/foo',           result: successObj, data: someData },
                 { method: 'GET',  ep: '/foo/nested',    result: someData },
                 { method: 'PUT',  ep: '/foo/nested',    result: successObj, data: someData },
             ];
+            /* eslint-enable no-multi-spaces */
 
         before(function (done) {
             var mount = router.create('/foo');
@@ -78,7 +79,7 @@ describe('API Routing tests', function () {
 
         reqs.forEach(function (rt) {
             it('[ ' + rt.method + ' -- ' + rt.ep + ' ]', function (done) {
-                var req = request({
+                request({
                     baseUrl: 'http://127.0.0.1:7777/',
                     uri: rt.ep,
                     method: rt.method,
