@@ -30,7 +30,7 @@ describe('API Routing tests', function () {
     var request = require('request'),
         util = require('util'),
         expect = require('chai').expect,
-        routerLib = require('../lib/router.js'),
+        router = require('../lib/router.js'),
 
         someData = { astring: 'dude', anumber: 42, aboolean: true },
         successObj = { success: true };
@@ -54,16 +54,7 @@ describe('API Routing tests', function () {
     }
 
     describe('> basic routing', function () {
-        var router = routerLib(),
-            server,
-            routes = {
-                get: getHandler.bind(null, '/foo!!GET', someData),
-                post: postHandler.bind(null, '/foo!!POST', someData),
-                '/nested': {
-                    get: getHandler.bind(null, '/foo/nested!!GET', someData),
-                    put: postHandler.bind(null, '/foo/nested!!PUT', someData)
-                }
-            },
+        var server,
             reqs = [
                 { method: 'GET',  ep: '/foo',           result: someData },
                 { method: 'POST', ep: '/foo',           result: successObj, data: someData },
@@ -72,8 +63,13 @@ describe('API Routing tests', function () {
             ];
 
         before(function (done) {
-            router.add('/foo', routes);
-            server = router.start({ port: 7777, noLogging: true }, done);
+            var mount = router.create('/foo');
+            mount.get('/foo', getHandler.bind(null, '/foo!!GET', someData));
+            mount.post('/foo', postHandler.bind(null, '/foo!!POST', someData));
+            mount.get('/foo/nested', getHandler.bind(null, '/foo/nested!!GET', someData));
+            mount.put('/foo/nested', postHandler.bind(null, '/foo/nested!!PUT', someData));
+
+            server = router.start(7777, done);
         });
 
         after(function () {
