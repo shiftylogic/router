@@ -70,7 +70,7 @@ describe('API Routing tests', function () {
             mount.get('/foo/nested', getHandler.bind(null, '/foo/nested!!GET', someData));
             mount.put('/foo/nested', postHandler.bind(null, '/foo/nested!!PUT', someData));
 
-            server = router.start(7777, done);
+            server = router.start({ port: 7777 }, done);
         });
 
         after(function () {
